@@ -1,7 +1,12 @@
 import nodemailer from "nodemailer"
 
+import write from "../helpers/writeFile.js"
+
 const pass = process.env.TRANSPORT_AUTH_PASSWORD;
 const user = process.env.TRANSPORT_AUTH_USER;
+const host = process.env.TRANSPORT_HOST;
+const port = process.env.TRANSPORT_PORT;
+const email = process.env.SENDING_MAIL;
 
 // async..await is not allowed in global scope, must use a wrapper
 export default async function sendingEmail() {
@@ -10,14 +15,19 @@ export default async function sendingEmail() {
   // create reusable transporter object using the default SMTP transport
   //teste
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
+    host,
+    port,
     ssl: true,
     auth: {        
-        user: user,
-        pass: pass
+        user,
+        pass
     },
   });
+
+  const email = await write();
+  
+  console.log(email);
+
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: `"teste" <${user}>`, // sender address
