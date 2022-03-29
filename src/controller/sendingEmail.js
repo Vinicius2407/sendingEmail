@@ -1,39 +1,37 @@
 import nodemailer from "nodemailer"
 
-const pass = process.env.TRANSPORT_AUTH_PASS;
+import write from "../helpers/writeFile.js"
+
+const pass = process.env.TRANSPORT_AUTH_PASSWORD;
 const user = process.env.TRANSPORT_AUTH_USER;
-;
+const host = process.env.TRANSPORT_HOST;
+const port = process.env.TRANSPORT_PORT;
+const email = process.env.SENDING_MAIL;
 
 // async..await is not allowed in global scope, must use a wrapper
 export default async function sendingEmail() {
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
-  let testAccount = await nodemailer.createTestAccount();
-  console.log(user, pass);
   // create reusable transporter object using the default SMTP transport
-  // let transporter = nodemailer.createTransport({
-  //   host: 'smtp.gmail.com',
-  //   port: 465,
-  //   ssl: true,
-  //   auth: {        
-  //       user: user,
-  //       pass: pass
-  //   },
-  // });
-
   //teste
   const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: 'lawson.rogahn82@ethereal.email',
-        pass: 'RxgQvCmxk8gzm8wa4z'
-    }
-});
+    host,
+    port,
+    ssl: true,
+    auth: {        
+        user,
+        pass
+    },
+  });
+
+  const email = await write();
+  
+  console.log(email);
+
   // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Foz Delivery" <thais@fozdelivery.com.br>', // sender address
-    to: "viniciussilvapereira24@gmail.com", // list of receivers
+  const info = await transporter.sendMail({
+    from: `"teste" <${user}>`, // sender address
+    to: `${email}`, // list of receivers
     subject: "Hello ✔", // Subject line
     text: "Hello world?", // plain text body
     html: "<b>Hello world?</b>", // html body

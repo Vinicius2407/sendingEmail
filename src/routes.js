@@ -4,6 +4,6 @@ import sendingEmail from "./controller/sendingEmail.js";
 
 const router = Router();
 
-router.post("./sendingEmail", sendingEmail);
+router("./sendingEmail", sendingEmail);
 
 export { router };
